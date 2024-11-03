@@ -1,23 +1,22 @@
+import pygame
+import values
 from bullet import *
 
-# NOTE: 座標は中心
 class Actor:
-    def __init__(self, canvas, size, x, y, speed, lives, color):
-        self.canvas = canvas
-        self.width = size
-        self.height = size
+    def __init__(self, size: int, x: int, y: int, speed: int, lives: int, color: tuple):
+        self.size = size
         self.x = x
         self.y = y
         self.speed = speed
         self.lives = lives
-        self.shape = self.canvas.create_rectangle(
-            self.x - self.width/2, self.y - self.height/2, self.x + self.width/2, self.y + self.height/2, fill=color
-        )
+        self.color = color
+        self.bullet_level = 1
 
     def move(self, dx, dy):
-        self.x += dx
-        self.y += dy
-        self.canvas.coords(self.shape, self.x - self.width/2, self.y - self.height/2, self.x + self.width/2, self.y + self.height/2)
+        pass
 
-    def fire(self, bullets, size, speed, color):
-        bullets.append(Bullet(self.canvas, size, self.x, self.y, speed, color))
+    def fire(self, bullets: list):
+        pass
+
+    def draw(self, window):
+        pygame.draw.rect(window, self.color, (self.x, self.y, self.size, self.size))

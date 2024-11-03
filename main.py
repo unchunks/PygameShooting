@@ -1,5 +1,5 @@
-from shooting import start_game, setup_events
+from shooting import game
 
-# ゲームループ開始
-setup_events()
-start_game()
+if __name__ == '__main__':
+    # ゲームループ開始
+    game()

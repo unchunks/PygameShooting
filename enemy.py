@@ -13,33 +13,25 @@ class Color(Enum):
 
 # 敵クラス
 class Enemy(Actor):
-    def __init__(self, canvas):
+    def __init__(self, x, y, move_pattern, type, cycle, amplitude):
         super().__init__(
-            canvas, 
-            values.ENEMY_SIZE, 
-            random.randint(0, values.WIDTH - values.ENEMY_SIZE),
-            0, 
-            values.ENEMY_SPEED, 
-            values.ENEMY_LIVES, 
-            values.ENEMY_COLOR
+            values.enemy_values['ENEMY_SIZE_' + type], 
+            x,
+            y, 
+            values.enemy_values['ENEMY_SPEED_' + type], 
+            values.enemy_values['ENEMY_LIVES_' + type], 
+            values.enemy_values['ENEMY_COLOR_' + type]
         )
-        self.last_shot_time = time.time()
+        self.move_pattern = move_pattern
+        self.type = type
+        self.score = values.enemy_values['ENEMY_SCORE_' + type]
+        self.originX = x
+        self.originY = y
+        self.cycle = cycle
+        self.amplitude = amplitude
 
     def move(self):
-        dx = dy = 0
-        dy += self.speed
-        super().move(dx, dy)
-        if self.y > values.HEIGHT:
-            self.canvas.delete(self.shape)
-            return False
-        return True
+        pass
 
     def fire(self, enemy_bullets):
-        if time.time() - self.last_shot_time > 1:
-            super().fire(
-                enemy_bullets,
-                values.ENEMY_BULLET_SIZE,
-                values.ENEMY_BULLET_SPEED,
-                values.ENEMY_BULLET_COLOR
-            )
-            self.last_shot_time = time.time()
+        pass
