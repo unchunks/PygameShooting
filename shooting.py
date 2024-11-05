@@ -278,7 +278,7 @@ def score_ui():
         load_scores()
     base_y = values.HEIGHT - 220
 
-    high_scores_text = font_middle.render("ハイスコア", True, values.YELLOW)
+    high_scores_text = font_middle.render("HIGH SCORE", True, values.YELLOW)
     high_scores_rect = high_scores_text.get_rect(center = (values.WIDTH // 2, base_y))
     window.blit(high_scores_text, high_scores_rect)
 
@@ -288,9 +288,9 @@ def score_ui():
         message = ""
         if point == last_score and last_score != 0 and last_score_not_found:
             color = values.SALMON
-            message = "← 最後のスコア"
+            message = "← last score"
             last_score_not_found = False
-        score_text = font_small.render(f"{i + 1}位: {point} {message}", True, color)
+        score_text = font_small.render(f"No.{i + 1}: {point} {message}", True, color)
         score_rect = (high_scores_rect.x + 10, base_y + 50 + i * 30)
         window.blit(score_text, score_rect)
 
@@ -371,7 +371,7 @@ def home_loop():
     window.blit(message_text, message_rect)
 
     # コンティニュー方法表示
-    continue_text = font_small.render(f"エンターキーでプレイ", True, values.WHITE)
+    continue_text = font_small.render(f"Press Enter", True, values.WHITE)
     continue_rect = continue_text.get_rect(center = (values.WIDTH // 2, values.HEIGHT // 2))
     window.blit(continue_text, continue_rect)
 
@@ -440,7 +440,7 @@ def game_clear():
     window.blit(message_text, message_rect)
 
     # コンティニュー方法表示
-    continue_text = font_small.render(f"エンターキーでもう一度プレイ", True, values.WHITE)
+    continue_text = font_small.render(f"Press Enter", True, values.WHITE)
     continue_rect = continue_text.get_rect(center = (values.WIDTH // 2, values.HEIGHT // 2))
     window.blit(continue_text, continue_rect)
 
@@ -474,7 +474,7 @@ def game_over():
     window.blit(message_text, message_rect)
 
     # コンティニュー方法表示
-    continue_text = font_small.render(f"エンターキーでもう一度挑戦", True, values.WHITE)
+    continue_text = font_small.render(f"Press Enter", True, values.WHITE)
     continue_rect = continue_text.get_rect(center = (values.WIDTH // 2, values.HEIGHT // 2))
     window.blit(continue_text, continue_rect)
 
