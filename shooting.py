@@ -73,7 +73,7 @@ def load_scores():
         with open(SCORE_FILE, "r") as file:
             high_scores = json.load(file)
     except (FileNotFoundError, json.JSONDecodeError):
-        high_scores = [0, 0, 0, 0, 0]
+        high_scores = [5000, 4000, 3000, 2000, 1000]
 
 # スコアの保存
 def save_score():
@@ -88,6 +88,7 @@ def save_score():
 # 敵の生成
 def spawn_enemy(): # ["STRAIGHT", "ZIGZAG", "STOP", "FAST", "BOSS"]
     type = random.choices(values.enemy_types, weights = values.enemy_weights, k = 1)[0]
+    # type = "BOSS"   
     direction = random.choice(["left", "right", "down"])
     enemy_x = random.randint(0, values.WIDTH - values.enemy_values['ENEMY_SIZE_' + type])
     enemy_y = random.randint(0, values.HEIGHT // 2)
@@ -157,25 +158,29 @@ def enemies_process():
             enemy.y -= enemy.speed
 
         # TODO: 敵の発砲処理
-        if random.randint(1, 50) == 1:
+        if random.randint(1, 50) == 1:    
             enemy_bullets.append(Bullet(
-                values.enemy_values["ENEMY_BULLET_SIZE_" + enemy.type], 
+                values.enemy_values["ENEMY_BULLET_SIZE_" + enemy.true_type], 
                 enemy.x + enemy.size // 2, 
                 enemy.y + enemy.size, 
                 0,
-                values.enemy_values["ENEMY_BULLET_SPEED_" + enemy.type], 
-                values.enemy_values["ENEMY_BULLET_COLOR_" + enemy.type],
+                values.enemy_values["ENEMY_BULLET_SPEED_" + enemy.true_type], 
+                values.enemy_values["ENEMY_BULLET_COLOR_" + enemy.true_type],
             ))
 
         # 画面外の接触処理
-        if enemy.type == "BOSS" and (enemy.x < 0 or values.WIDTH < enemy.x + enemy.size or enemy.y < 0 or values.HEIGHT < enemy.y + enemy.size):
+        if enemy.true_type == "BOSS" and (random.randint(1, 60) == 1 or enemy.x < 0 or values.WIDTH < enemy.x + enemy.size or enemy.y < 0 or values.HEIGHT < enemy.y + enemy.size):
             if enemy.move_pattern == "left":    enemy.x += enemy.speed
             elif enemy.move_pattern == "right": enemy.x -= enemy.speed
             elif enemy.move_pattern == "down":  enemy.y -= enemy.speed
             elif enemy.move_pattern == "up":    enemy.y += enemy.speed
             directions = ["left", "right", "down", "up"]
             directions.remove(enemy.move_pattern)
+            prev_pattern = enemy.move_pattern
             enemy.move_pattern = random.choice(["left", "right", "down", "up"])
+            if prev_pattern == "down" and enemy.move_pattern == ("left" or "right"):
+                enemy.speed += 1
+
         elif enemy.x + enemy.size < 0 or values.WIDTH <  enemy.x or enemy.y + enemy.size < 0 or values.HEIGHT < enemy.y: 
             enemies.remove(enemy)
             # del enemy
@@ -219,7 +224,7 @@ def collision_check():
                     # del bullet
                 enemy.lives -= 1
                 if enemy.lives == 0:
-                    if enemy.type == "BOSS":
+                    if enemy.true_type == "BOSS":
                         screen = CLEAR
                     score += enemy.score
                     enemies.remove(enemy)

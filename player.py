@@ -1,3 +1,4 @@
+import pygame
 from actor import Actor
 from bullet import *
 import values
@@ -13,12 +14,18 @@ class Player(Actor):
             values.PLAYER_LIVES, 
             values.PLAYER_COLOR
         )
+        self.timestamp = 0
+        self.image = pygame.image.load("player.png")
+        self.image = pygame.transform.scale(self.image, (self.size, self.size))  # リサイズ
+
 
     def move(self, dir):
         pass
 
     def fire(self) -> list:
         bullets = []
+        if pygame.time.get_ticks() - self.timestamp > 5000:
+            self.bullet_level = 1
         if self.bullet_level == 1:
             # 中央
             bullets.append(Bullet(
@@ -29,7 +36,7 @@ class Player(Actor):
                 -values.PLAYER_BULLET_SPEED, 
                 values.PLAYER_BULLET_COLOR,
             ))
-        else:
+        elif self.bullet_level > 1:
             # 中央
             bullets.append(Bullet(
                 values.PLAYER_BULLET_SIZE, 
@@ -58,3 +65,6 @@ class Player(Actor):
                 values.PLAYER_BULLET_COLOR,
             ))
         return bullets
+
+    def draw(self, window):
+        window.blit(self.image, (self.x, self.y))

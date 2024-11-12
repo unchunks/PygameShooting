@@ -45,18 +45,22 @@ class Item:
 
     def enhancement(self, player):
         if   self.type == "HEAL":
-            self.heal_life(player)
+            player = self.heal_life(player)
         elif self.type == "SPEED":
-            self.speed_enhance(player)
+            player = self.speed_enhance(player)
         elif self.type == "BULLET":
-            self.bullet_enhance(player)
+            player = self.bullet_enhance(player)
         return player
 
     def heal_life(self, player):
         player.lives += 1
+        return player
 
     def speed_enhance(self, player):
-        player.speed += 1
+        player.speed += 5
+        return player
 
     def bullet_enhance(self, player):
-        player.bullet_level += 1
+        player.bullet_level = 2
+        player.timestamp = pygame.time.get_ticks()
+        return player

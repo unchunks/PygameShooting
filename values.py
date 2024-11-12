@@ -55,7 +55,7 @@ item_weights = [1, 1, 1]
 # プレイヤー
 PLAYER_SIZE  = 30
 PLAYER_SPEED = 10
-PLAYER_LIVES = 5
+PLAYER_LIVES = 3
 PLAYER_COLOR = WHITE
 
 PLAYER_BULLET_SIZE   = 5
@@ -130,5 +130,5 @@ enemy_weights = [
     ENEMY_SCORE_TOTAL / enemy_values["ENEMY_SCORE_ZIGZAG"],
     ENEMY_SCORE_TOTAL / enemy_values["ENEMY_SCORE_STOP"],
     ENEMY_SCORE_TOTAL / enemy_values["ENEMY_SCORE_FAST"],
-    ENEMY_SCORE_TOTAL / enemy_values["ENEMY_SCORE_BOSS"]
+    ENEMY_SCORE_TOTAL / enemy_values["ENEMY_SCORE_BOSS"] / 100
 ]
