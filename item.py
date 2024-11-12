@@ -1,6 +1,7 @@
 import pygame
 import values
-import colorsys
+import sys
+import os
 
 class Item:
     def __init__(self, x, y, type):
@@ -12,33 +13,26 @@ class Item:
         self.size = values.ITEM_SIZE
         self.hue = 0
 
-    def update_color(self):
-        r, g, b = self.color
-        r, g, b = r / 255.0, g / 255.0, b / 255.0
-        h, s, v = colorsys.rgb_to_hsv(r, g, b)
+        if self.type == "BULLET":
+            source_y = 0
+        if self.type == "HEAL":
+            source_y = 5
+        if self.type == "SPEED":
+            source_y = 10
+        image_path = self.resource_path("images/item.png")
+        image = pygame.image.load(image_path)
+        clip_rect = pygame.Rect(0, source_y, 5, 5)
+        image = image.subsurface(clip_rect) # クリップ
+        self.image = pygame.transform.scale(image, (self.size, self.size))  # リサイズ
 
-        # 彩度の変化方向を保持するフラグ（初期値はTrueで増加方向）
-        if not hasattr(self, "s_increasing"):
-            self.s_increasing = True
-
-        # 彩度を増加または減少させる
-        if self.s_increasing:
-            v += (5.0 / 255.0)
-            if v >= 1.0:
-                v = 1.0
-                self.s_increasing = False  # 彩度が最大値に達したので減少方向に切り替える
-        else:
-            v -= (5.0 / 255.0)
-            if v <= 0.5:
-                v = 0.5
-                self.s_increasing = True  # 彩度が最小値に達したので増加方向に切り替える
-        
-        r, g, b = colorsys.hsv_to_rgb(h, s, v)
-        self.color = (int(r * 255), int(g * 255), int(b * 255))
+    # PyInstallerでパッケージングされた場合の画像パスを取得
+    def resource_path(self, relative_path):
+        """ 画像ファイルへのパスを返す """
+        base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
+        return os.path.join(base_path, relative_path)
 
     def draw(self, window):
-        self.update_color()
-        pygame.draw.circle(window, self.color, (self.x, self.y), self.size)
+        window.blit(self.image, (self.x, self.y))
 
     def move(self):
         self.y += self.speed

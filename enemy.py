@@ -2,6 +2,8 @@ import pygame
 from enum import Enum
 from actor import Actor
 import values
+import sys
+import os
 
 class Color(Enum):
     PROFILE     = 1 # 縦断
@@ -30,7 +32,7 @@ class Enemy(Actor):
         self.cycle = cycle
         self.amplitude = amplitude
 
-        image = pygame.image.load("enemy.png")
+        image_path = self.resource_path("images/enemy.png")
 
         if self.move_pattern == "down":
             rotate = 180
@@ -56,13 +58,20 @@ class Enemy(Actor):
         if self.type == "BOSS":
             source_w = 64
             source_h = 64
-            image = pygame.image.load("boss.png")
+            image_path = self.resource_path("images/boss.png")
             rotate = 180
 
+        image = pygame.image.load(image_path)
         clip_rect = pygame.Rect(source_x, source_y, source_w, source_h)
         image = image.subsurface(clip_rect) # クリップ
         image = pygame.transform.scale(image, (self.size, self.size))  # リサイズ
         self.image = pygame.transform.rotate(image, rotate) # 回転
+
+    # PyInstallerでパッケージングされた場合の画像パスを取得
+    def resource_path(self, relative_path):
+        """ 画像ファイルへのパスを返す """
+        base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
+        return os.path.join(base_path, relative_path)
 
     def move(self):
         pass

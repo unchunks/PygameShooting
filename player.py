@@ -2,6 +2,8 @@ import pygame
 from actor import Actor
 from bullet import *
 import values
+import sys
+import os
 
 # プレイヤークラス
 class Player(Actor):
@@ -15,9 +17,15 @@ class Player(Actor):
             values.PLAYER_COLOR
         )
         self.timestamp = 0
-        self.image = pygame.image.load("player.png")
-        self.image = pygame.transform.scale(self.image, (self.size, self.size))  # リサイズ
+        image_path = self.resource_path("images/player.png")
+        image = pygame.image.load(image_path)
+        self.image = pygame.transform.scale(image, (self.size, self.size))  # リサイズ
 
+    # PyInstallerでパッケージングされた場合の画像パスを取得
+    def resource_path(self, relative_path):
+        """ 画像ファイルへのパスを返す """
+        base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
+        return os.path.join(base_path, relative_path)
 
     def move(self, dir):
         pass

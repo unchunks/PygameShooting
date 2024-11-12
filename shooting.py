@@ -402,7 +402,7 @@ def play_loop():
         spawn_enemy()
 
     # アイテムの生成
-    if random.randint(1, 1000) == 1 and len(items) < values.ITEM_NUM:
+    if random.randint(1, 500) == 1 and len(items) < values.ITEM_NUM:
         spawn_item()
 
     player_process()
