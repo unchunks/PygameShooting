@@ -14,7 +14,7 @@ pygame.init()
 
 # ウィンドウの作成
 window = pygame.display.set_mode((values.WIDTH, values.HEIGHT))
-pygame.display.set_caption("2D弾幕ゲーム")
+pygame.display.set_caption("VIA LACTEA")
 
 # フォント設定
 font_big = pygame.font.SysFont("hackgen", 48)
@@ -371,7 +371,7 @@ def home_loop():
     score_ui()
 
     # メッセージ方法表示
-    message_text = font_big.render(f"SHOOTING GAME", True, values.BEIGE)
+    message_text = font_big.render(f"VIA LACTEA", True, values.BEIGE)
     message_rect = message_text.get_rect(center = (values.WIDTH // 2, values.HEIGHT // 3))
     window.blit(message_text, message_rect)
 
