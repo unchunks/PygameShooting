@@ -1,6 +1,9 @@
 __pycashe__/*
+.vscode/*
 build/*
 dist/*
 test.py
+high_scores.json           
+TODO.md
 要件定義書.md
-TODO.md                 
+resource.pyxres
