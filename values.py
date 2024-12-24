@@ -3,8 +3,11 @@ FPS = 60
 FRAME_TIME = int(1000 / FPS)  # ms
 
 # キャンバスのサイズ
-WIDTH = 800
-HEIGHT = 600
+INIT_WIDTH = 1440
+INIT_HEIGHT = 850
+
+# INIT_WIDTH = 1280
+# INIT_HEIGHT = 720
 
 # 色の定
 RED = (255, 0, 0)
@@ -38,6 +41,16 @@ MINT = (189, 252, 201)
 SALMON = (250, 128, 114)
 CHOCOLATE = (210, 105, 30)
 
+# 方向
+LEFT = (-1, 0)
+RIGHT = (1, 0)
+UP = (0, -1)
+DOWN = (0, 1)
+LEFT_UP = (-1, -1)
+LEFT_DOWN = (-1, 1)
+RIGHT_UP = (1, -1)
+RIGHT_DOWN = (1, 1)
+
 ITEM_NUM = 2
 
 ITEM_SPEED = 3
@@ -65,6 +78,17 @@ PLAYER_BULLET_COLOR  = GREEN
 ENEMY_NUM = 10
 
 enemy_values = {
+    # 静止
+    "ENEMY_SIZE_STOP"  : 40,
+    "ENEMY_SPEED_STOP" : 0,
+    "ENEMY_LIVES_STOP" : 5,
+    "ENEMY_COLOR_STOP" : RED,
+    "ENEMY_SCORE_STOP" : 40,
+
+    "ENEMY_BULLET_SIZE_STOP"  : 10,
+    "ENEMY_BULLET_SPEED_STOP" : 8,
+    "ENEMY_BULLET_COLOR_STOP" : MAGENTA,
+
     # 直線移動
     "ENEMY_SIZE_STRAIGHT"  : 40,
     "ENEMY_SPEED_STRAIGHT" : 5,
@@ -86,17 +110,6 @@ enemy_values = {
     "ENEMY_BULLET_SIZE_ZIGZAG"  : 10,
     "ENEMY_BULLET_SPEED_ZIGZAG" : 15,
     "ENEMY_BULLET_COLOR_ZIGZAG" : SKY_BLUE,
-
-    # 静止
-    "ENEMY_SIZE_STOP"  : 40,
-    "ENEMY_SPEED_STOP" : 0,
-    "ENEMY_LIVES_STOP" : 5,
-    "ENEMY_COLOR_STOP" : RED,
-    "ENEMY_SCORE_STOP" : 40,
-
-    "ENEMY_BULLET_SIZE_STOP"  : 10,
-    "ENEMY_BULLET_SPEED_STOP" : 8,
-    "ENEMY_BULLET_COLOR_STOP" : MAGENTA,
 
     # 素早い
     "ENEMY_SIZE_FAST"  : 30,
@@ -121,14 +134,14 @@ enemy_values = {
     "ENEMY_BULLET_COLOR_BOSS" : SILVER,
 }
 
-ENEMY_SCORE_TOTAL = enemy_values["ENEMY_SCORE_STRAIGHT"] + enemy_values["ENEMY_SCORE_ZIGZAG"] + enemy_values["ENEMY_SCORE_STOP"] + enemy_values["ENEMY_SCORE_FAST"] + enemy_values["ENEMY_SCORE_BOSS"]
+ENEMY_SCORE_TOTAL = enemy_values["ENEMY_SCORE_STOP"] + enemy_values["ENEMY_SCORE_STRAIGHT"] + enemy_values["ENEMY_SCORE_ZIGZAG"] + enemy_values["ENEMY_SCORE_FAST"] + enemy_values["ENEMY_SCORE_BOSS"]
 # 敵の種類
-enemy_types = ["STRAIGHT", "ZIGZAG", "STOP", "FAST", "BOSS"]
+enemy_types = ["STOP", "STRAIGHT", "ZIGZAG", "FAST", "BOSS"]
 # 各選択肢に対応する重み（選ばれる確率）
 enemy_weights = [
+    ENEMY_SCORE_TOTAL / enemy_values["ENEMY_SCORE_STOP"],
     ENEMY_SCORE_TOTAL / enemy_values["ENEMY_SCORE_STRAIGHT"],
     ENEMY_SCORE_TOTAL / enemy_values["ENEMY_SCORE_ZIGZAG"],
-    ENEMY_SCORE_TOTAL / enemy_values["ENEMY_SCORE_STOP"],
     ENEMY_SCORE_TOTAL / enemy_values["ENEMY_SCORE_FAST"],
-    ENEMY_SCORE_TOTAL / enemy_values["ENEMY_SCORE_BOSS"] / 100
+    ENEMY_SCORE_TOTAL / enemy_values["ENEMY_SCORE_BOSS"] / 5
 ]
