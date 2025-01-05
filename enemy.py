@@ -1,12 +1,11 @@
 import pygame
-from actor import Actor
-from bullet import Bullet
+from character import Character
 import values
 
 
 # 敵クラス
-class Enemy(Actor):
-    def __init__(self, x: int, y: int, move_direction: tuple, type: str, cycle: int, amplitude: int):
+class Enemy(Character):
+    def __init__(self, x: int, y: int, move_direction: tuple[int, int], type: str, cycle: int, amplitude: int):
         super().__init__(
             values.enemy_values['ENEMY_SIZE_' + type], 
             x,
@@ -17,25 +16,25 @@ class Enemy(Actor):
             values.enemy_values['ENEMY_BULLET_SIZE_' + type],
             values.enemy_values['ENEMY_BULLET_SPEED_' + type],
             values.enemy_values['ENEMY_BULLET_COLOR_' + type],
-            self.resource_path("images/enemy.png")
+            "images/enemy.png"
         )
 
         # 移動方向 [UP, DOWN, LEFT, RIGHT]
-        self.move_direction = move_direction
+        self.move_direction: tuple[int, int] = move_direction
 
         # 現在の移動タイプ ["STOP", "STRAIGHT", "ZIGZAG", "FAST", "BOSS"]
-        self.type = type
+        self.type: str = type
         # 元の移動タイプ（BOSS用） ["STOP", "STRAIGHT", "ZIGZAG", "FAST", "BOSS"]
-        self.true_type = type
+        self.true_type: str = type
 
         # 倒した際のスコア
-        self.score = values.enemy_values['ENEMY_SCORE_' + type]
+        self.score: int = values.enemy_values['ENEMY_SCORE_' + type]
 
         # 基準座標と周期、振幅(ZIGZAG用)
-        self.originX = x
-        self.originY = y
-        self.cycle = cycle
-        self.amplitude = amplitude
+        self.originX: int = x
+        self.originY: int = y
+        self.cycle: int = cycle
+        self.amplitude: int = amplitude
 
         if self.move_direction == values.DOWN:
             rotate = 180
@@ -88,6 +87,3 @@ class Enemy(Actor):
             # 左下
             bullets.append(super().shoot(values.LEFT_DOWN))
         return bullets
-
-    def draw(self, window):
-        window.blit(self.image, (self.x, self.y))

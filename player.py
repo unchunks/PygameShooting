@@ -1,10 +1,9 @@
 import pygame
-from actor import Actor
-from bullet import *
+from character import Character
 import values
 
 # プレイヤークラス
-class Player(Actor):
+class Player(Character):
     def __init__(self, win_width, win_height):
         super().__init__(
             values.PLAYER_SIZE, 
@@ -16,10 +15,14 @@ class Player(Actor):
             values.PLAYER_BULLET_SIZE,
             values.PLAYER_BULLET_SPEED,
             values.PLAYER_BULLET_COLOR,
-            self.resource_path("images/player.png")
+            "images/player.png"
         )
+        # 弾のレベル
+        self.bullet_level: int = 1
+
         # 弾強化の時間制限用
-        self.timestamp = 0
+        self.timestamp: int = 0
+
         image = pygame.image.load(self.image_path)
         self.image = pygame.transform.scale(image, (self.size, self.size))  # リサイズ
 
@@ -38,6 +41,3 @@ class Player(Actor):
             # 左上
             bullets.append(self.shoot(values.LEFT_UP))
         return bullets
-
-    def draw(self, window):
-        window.blit(self.image, (self.x, self.y))

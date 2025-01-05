@@ -3,7 +3,7 @@ import random
 import sys
 import math
 import json
-from actor import *
+from character import *
 from player import *
 from enemy import *
 from item import *
@@ -45,9 +45,11 @@ OVER = 3
 player = Player(values.INIT_WIDTH, values.INIT_HEIGHT)
 player_bullets = []
 
+enemy_num = values.ENEMY_NUM
 enemies = []
 enemy_bullets = []
 
+item_num = values.ITEM_NUM
 items = []
 boss_mode = False
 
@@ -57,6 +59,8 @@ def main_loop():
     load_scores()
 
     resize_font()
+    resize_stars()
+    resize_max_num()
 
     # 初期画面
     screen = HOME
@@ -76,7 +80,7 @@ def main_loop():
 
 
 # ゲーム画面
-def game():
+def game() -> int:
     input_key_game()
 
     spawn_enemy()
@@ -90,24 +94,23 @@ def game():
 
     draw_gradient_background(values.BLACK, values.NAVY)
     draw_animate_stars()
-    draw_actors()
+    draw_characters()
     draw_game_ui()
 
     return next_screen
 
 # ホーム画面
-def menu_home():
-    draw_gradient_background(values.BLACK, values.NAVY)
-    draw_animate_stars()
-
+def menu_home() -> int:
     next_screen = input_key_menu(HOME)
 
+    draw_gradient_background(values.BLACK, values.NAVY)
+    draw_animate_stars()
     draw_message_menu("VIA LACTEA", values.BEIGE)
 
     return next_screen
 
 # ゲームクリア画面
-def menu_clear():
+def menu_clear() -> int:
     next_screen = input_key_menu(CLEAR)
 
     draw_gradient_background(values.NAVY, values.SKY_BLUE)
@@ -117,7 +120,7 @@ def menu_clear():
     return next_screen
 
 # ゲームオーバー画面
-def menu_over():
+def menu_over() -> int:
     next_screen = input_key_menu(OVER)
 
     draw_gradient_background(values.BLACK, values.NAVY)
@@ -127,7 +130,7 @@ def menu_over():
 
 
 # 整数を画面サイズに合わせる
-def resize_int(value: int):
+def resize_int(value: int) -> int:
     global window
     win_width, win_height = window.get_size()
     win_average = win_height
@@ -141,6 +144,16 @@ def resize_font():
     font_middle = pygame.font.SysFont("hackgen", resize_int(48))
     font_small = pygame.font.SysFont("hackgen", resize_int(36))
 
+# 背景の星の数を画面サイズに合わせる
+def resize_stars():
+    global stars
+    stars = [[random.randint(0, window.get_width()), random.randint(0, window.get_height())] for _ in range(resize_int(50))]
+
+# 敵とアイテムの最大数を画面サイズに合わせる
+def resize_max_num():
+    global enemy_num, item_num
+    enemy_num = resize_int(values.ENEMY_NUM)
+    item_num = resize_int(values.ITEM_NUM)
 
 # ゲーム内で使用する変数の初期化
 def init_game():
@@ -182,8 +195,8 @@ def save_score():
 
 # 敵の生成
 def spawn_enemy(): # ["STOP", "STRAIGHT", "ZIGZAG", "FAST", "BOSS"]
-    global boss_mode, enemies, window
-    if random.randint(1, 10) == 1 and len(enemies) < values.ENEMY_NUM:
+    global boss_mode, enemies, window, enemy_num
+    if random.randint(1, 10) == 1 and len(enemies) < enemy_num:
         type = random.choices(values.enemy_types, weights = values.enemy_weights, k = 1)[0]
         if boss_mode:
             type = "BOSS"   
@@ -204,8 +217,8 @@ def spawn_enemy(): # ["STOP", "STRAIGHT", "ZIGZAG", "FAST", "BOSS"]
 
 # アイテムの生成
 def spawn_item(): # ["HEAL", "SPEED", "BULLET"]
-    global items, window
-    if random.randint(1, 500) == 1 and len(items) < values.ITEM_NUM:
+    global items, window, item_num
+    if random.randint(1, 500) == 1 and len(items) < item_num:
         type = random.choices(values.item_types, weights = values.item_weights, k = 1)[0]
         win_width, win_height = window.get_size()
         item_x = random.randint(0, win_width)
@@ -226,6 +239,8 @@ def input_mouse():
             win_width, win_height = event.w, event.h  # 新しい幅と高さを取得
             window = pygame.display.set_mode((win_width, win_height), pygame.RESIZABLE)  # 新しいサイズでウィンドウを再設定
             resize_font()
+            resize_stars()
+            resize_max_num()
 
             # ウィンドウリサイズでプレイヤーが画面外に出ないように
             if player.x > win_width:
@@ -249,11 +264,11 @@ def input_key_game():
     if keys[pygame.K_SPACE]:
         player_bullets.extend(player.fire())
     
-    if keys[pygame.K_p]:
-        player.bullet_level += 1
+    # if keys[pygame.K_p]:
+    #     player.bullet_level += 1
 
 # メニュー画面のキー入力処理
-def input_key_menu(now_screen) -> int:
+def input_key_menu(now_screen: int) -> int:
     global boss_mode
     next_screen = now_screen
     # キー入力処理
@@ -301,7 +316,7 @@ def process_enemies():
         if enemy.true_type == "BOSS" and (random.randint(1, 100) == 1 or enemy.x < 0 or win_width < enemy.x + enemy.size or enemy.y < 0 or win_height * 0.9 < enemy.y + enemy.size):
             # 画面枠に引っかからないように
             # enemy.move(enemy.move_direction, True)
-            Actor.move(enemy, enemy.move_direction, True)
+            Character.move(enemy, enemy.move_direction, True)
 
             # 万が一外に出たときは内部にテレポート
             cushion_padding = 5
@@ -354,7 +369,7 @@ def process_items():
             items.remove(item)
 
 # 弾とキャラクターとアイテムの衝突判定・処理
-def check_collision():
+def check_collision() -> int:
     global score, player, player_bullets, enemies, enemy_bullets, boss_mode
     next_screen = GAME
     # 敵弾とプレイヤー
@@ -395,19 +410,19 @@ def check_collision():
 
 
 # グラデーション背景
-def draw_gradient_background(color1, color2):
+def draw_gradient_background(top_color: tuple[int, int, int], bottom_color: tuple[int, int, int]):
     global window
     win_width, win_height = window.get_size()
     for y in range(win_height):
         # 画面の上から下まで線形補間で色を変化させる
         blend_ratio = y / win_height
-        r = int(color1[0] * (1 - blend_ratio) + color2[0] * blend_ratio)
-        g = int(color1[1] * (1 - blend_ratio) + color2[1] * blend_ratio)
-        b = int(color1[2] * (1 - blend_ratio) + color2[2] * blend_ratio)
+        r = int(top_color[0] * (1 - blend_ratio) + bottom_color[0] * blend_ratio)
+        g = int(top_color[1] * (1 - blend_ratio) + bottom_color[1] * blend_ratio)
+        b = int(top_color[2] * (1 - blend_ratio) + bottom_color[2] * blend_ratio)
         pygame.draw.line(window, (r, g, b), (0, y), (win_width, y))
 
 # パーティクル
-def draw_particles(num_particles=30):
+def draw_particles(num_particles: int = 30):
     global window
     win_width, win_height = window.get_size()
     for _ in range(num_particles):
@@ -472,7 +487,7 @@ def draw_message_menu(text: str, color: tuple):
     draw_high_score()
 
 # キャラと弾とアイテムの描画
-def draw_actors():
+def draw_characters():
     # プレイヤーの描画
     player.draw(window)
 
